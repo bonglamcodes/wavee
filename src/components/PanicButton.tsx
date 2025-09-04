@@ -93,18 +93,7 @@ const PanicButton = () => {
         setAudioEnabled(prefs.audioEnabled !== false);
         setCurrentAmbientSound(prefs.ambientSound || 'ocean');
         
-        // Show initialization status
-        if (speechService.isElevenLabsEnabled()) {
-          toast({
-            title: "🎵 Premium Audio Ready",
-            description: "ElevenLabs AI voice is now available for guided sessions!",
-          });
-        } else {
-          toast({
-            title: "🔊 Audio System Ready", 
-            description: "Using browser text-to-speech for guided sessions.",
-          });
-        }
+        // Audio service initialized silently
       } catch (error) {
         console.error('Failed to initialize audio services:', error);
       }
