@@ -167,16 +167,27 @@ class SpeechService {
       this.currentUtterance.pitch = options.pitch || 1;
       this.currentUtterance.volume = this.speechVolume * (options.volume || 1);
 
-      // Try to use a calm, soothing voice
+      // Use consistent voice for all speech
       const voices = speechSynthesis.getVoices();
-      const preferredVoice = voices.find(voice => 
-        voice.name.toLowerCase().includes('female') || 
-        voice.name.toLowerCase().includes('samantha') ||
-        voice.name.toLowerCase().includes('karen')
-      ) || voices[0];
+      let selectedVoice = null;
+      
+      // Try to find the same voice every time for consistency
+      if (voices.length > 0) {
+        // First try to find a preferred calm voice
+        selectedVoice = voices.find(voice => 
+          voice.name.toLowerCase().includes('samantha') ||
+          voice.name.toLowerCase().includes('karen') ||
+          (voice.name.toLowerCase().includes('female') && voice.lang.startsWith('en'))
+        );
+        
+        // If no preferred voice found, use the first available English voice
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+        }
+      }
 
-      if (preferredVoice) {
-        this.currentUtterance.voice = preferredVoice;
+      if (selectedVoice) {
+        this.currentUtterance.voice = selectedVoice;
       }
 
       this.currentUtterance.onstart = () => {
