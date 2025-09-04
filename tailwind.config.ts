@@ -52,6 +52,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Wavee-specific calming colors
+				'calming-blue': 'hsl(var(--calming-blue))',
+				'calming-teal': 'hsl(var(--calming-teal))',
+				'soft-blue': 'hsl(var(--soft-blue))',
+				'panic-red': 'hsl(var(--panic-red))',
+				'success-green': 'hsl(var(--success-green))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
