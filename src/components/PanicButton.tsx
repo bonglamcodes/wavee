@@ -273,12 +273,7 @@ const PanicButton = () => {
     setBreathingPhase('inhale');
     setBreathingCycles(0);
     
-    // Play initial breathing cue
-    if (audioEnabled && isServiceInitialized) {
-      setTimeout(() => {
-        speechService.speakBreathingCue('inhale', breathingPattern.inhale);
-      }, 1000); // Small delay to let the user see the visual start
-    }
+    // No audio cues to prevent conflicts with step audio
   };
 
   const stopBreathingExercise = () => {
