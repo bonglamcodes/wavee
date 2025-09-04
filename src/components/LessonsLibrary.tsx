@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, CheckCircle, ArrowRight } from "lucide-react";
 
-const LessonsLibrary = () => {
+interface LessonsLibraryProps {
+  isGuest?: boolean;
+}
+
+const LessonsLibrary = ({ isGuest = false }: LessonsLibraryProps) => {
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
 
@@ -340,11 +344,17 @@ Remember: The goal isn't to eliminate all negative thoughts, but to have a more 
               Short lessons for immediate coping strategies
             </p>
             
-            {lessons.shortTerm.map((lesson) => (
+            {lessons.shortTerm.map((lesson, index) => (
               <div 
                 key={lesson.id}
-                className="p-4 bg-background/50 rounded-lg border border-border hover:bg-background/70 transition-colors cursor-pointer"
-                onClick={() => setSelectedLesson(lesson.id)}
+                className={`p-4 bg-background/50 rounded-lg border border-border transition-colors ${
+                  isGuest && index > 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-background/70 cursor-pointer'
+                }`}
+                onClick={() => {
+                  if (!isGuest || index === 0) {
+                    setSelectedLesson(lesson.id);
+                  }
+                }}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -352,6 +362,9 @@ Remember: The goal isn't to eliminate all negative thoughts, but to have a more 
                       <h4 className="font-semibold text-foreground">{lesson.title}</h4>
                       {isCompleted(lesson.id) && (
                         <CheckCircle className="h-4 w-4 text-success-green" />
+                      )}
+                      {isGuest && index > 0 && (
+                        <Badge variant="outline" className="text-xs">Premium</Badge>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
@@ -375,34 +388,48 @@ Remember: The goal isn't to eliminate all negative thoughts, but to have a more 
               In-depth lessons for lasting anxiety management
             </p>
             
-            {lessons.longTerm.map((lesson) => (
-              <div 
-                key={lesson.id}
-                className="p-4 bg-background/50 rounded-lg border border-border hover:bg-background/70 transition-colors cursor-pointer"
-                onClick={() => setSelectedLesson(lesson.id)}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold text-foreground">{lesson.title}</h4>
-                      {isCompleted(lesson.id) && (
-                        <CheckCircle className="h-4 w-4 text-success-green" />
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {lesson.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {lesson.duration}
-                      </Badge>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground ml-2" />
-                </div>
+            {isGuest ? (
+              <div className="text-center p-8 bg-background/50 rounded-lg border border-border">
+                <h4 className="text-lg font-semibold text-foreground mb-2">
+                  Unlock Complete Learning Library
+                </h4>
+                <p className="text-muted-foreground mb-4">
+                  Create a free account to access all in-depth lessons and build lasting anxiety management skills.
+                </p>
+                <Button className="bg-primary hover:bg-primary/90">
+                  Sign Up for Free Access
+                </Button>
               </div>
-            ))}
+            ) : (
+              lessons.longTerm.map((lesson) => (
+                <div 
+                  key={lesson.id}
+                  className="p-4 bg-background/50 rounded-lg border border-border hover:bg-background/70 transition-colors cursor-pointer"
+                  onClick={() => setSelectedLesson(lesson.id)}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-foreground">{lesson.title}</h4>
+                        {isCompleted(lesson.id) && (
+                          <CheckCircle className="h-4 w-4 text-success-green" />
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {lesson.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {lesson.duration}
+                        </Badge>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground ml-2" />
+                  </div>
+                </div>
+              ))
+            )}
           </TabsContent>
         </Tabs>
       </CardContent>

@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wind, Play, Pause, RotateCcw } from "lucide-react";
 
-const BreathingExercise = () => {
+interface BreathingExerciseProps {
+  isGuest?: boolean;
+}
+
+const BreathingExercise = ({ isGuest = false }: BreathingExerciseProps) => {
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale');
   const [count, setCount] = useState(4);
@@ -136,10 +140,15 @@ const BreathingExercise = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="60">1 minute</SelectItem>
-                <SelectItem value="180">3 minutes</SelectItem>
-                <SelectItem value="300">5 minutes</SelectItem>
+                {!isGuest && <SelectItem value="180">3 minutes</SelectItem>}
+                {!isGuest && <SelectItem value="300">5 minutes</SelectItem>}
               </SelectContent>
             </Select>
+            {isGuest && (
+              <p className="text-xs text-muted-foreground">
+                Sign up for longer breathing sessions
+              </p>
+            )}
           </div>
 
           <div className="flex gap-2">
