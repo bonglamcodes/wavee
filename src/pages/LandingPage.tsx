@@ -280,26 +280,16 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 mt-16 bg-background/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <Waves className="h-6 w-6 text-primary" />
+      <footer className="border-t border-border/40 mt-16 bg-background/80 backdrop-blur">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col items-center text-center space-y-3">
+            <div className="flex items-center gap-2">
+              <Waves className="h-5 w-5 text-primary" />
               <span className="text-lg font-semibold text-primary">Wavee</span>
-              <span className="text-sm text-muted-foreground">🌊 Mental wellness companion</span>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">
-                🚨 If you're experiencing a mental health emergency, please contact emergency services or a crisis helpline immediately.
-              </p>
-              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                <span>🔒 Your privacy matters</span>
-                <span>•</span>
-                <span>🌟 Evidence-based tools</span>
-                <span>•</span>
-                <span>💚 Made with care</span>
-              </div>
-            </div>
+            <p className="text-xs text-muted-foreground max-w-md">
+              If you're experiencing a mental health emergency, please contact emergency services immediately.
+            </p>
           </div>
         </div>
       </footer>
