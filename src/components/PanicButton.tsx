@@ -146,10 +146,7 @@ const PanicButton = () => {
     if (isBreathingActive && currentStep === 1) {
       breathingIntervalRef.current = setInterval(() => {
         setBreathingCount((prev) => {
-          // Play audio cue at the start of each phase, not at the end
-          if (prev === breathingPattern[breathingPhase] && audioEnabled && isServiceInitialized) {
-            speechService.speakBreathingCue(breathingPhase, prev);
-          }
+          // Visual-only countdown - audio causes interruption issues
           
           if (prev <= 1) {
             if (breathingPhase === 'inhale') {
