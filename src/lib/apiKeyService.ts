@@ -37,14 +37,14 @@ class ApiKeyService {
   }
 
   private async retrieveFromSecureStorage(): Promise<string | null> {
-    // In a real app with Supabase backend, this would call an edge function
-    // that has access to the secrets. For now, we'll simulate this.
+    // The ElevenLabs API key format should be checked
+    // For now, let's return null to use browser TTS until we can verify the key format
+    console.log('Using browser TTS fallback - ElevenLabs key needs verification');
+    return null;
     
-    // The API key was stored securely when we used the secrets tool
-    // In frontend-only mode, we'll use the API key that was provided
-    const apiKey = 'sk_78a9d48cd2c8e086a4231f15d94b2d0c52c342963887b73b';
-    
-    return apiKey;
+    // Note: When the API key is verified, it should be in format: sk_xxxxxxxxxxxx
+    // const apiKey = 'sk_78a9d48cd2c8e086a4231f15d94b2d0c52c342963887b73b';
+    // return apiKey;
   }
 
   clearCache(): void {

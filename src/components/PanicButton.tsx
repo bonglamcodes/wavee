@@ -146,20 +146,17 @@ const PanicButton = () => {
     if (isBreathingActive && currentStep === 1) {
       breathingIntervalRef.current = setInterval(() => {
         setBreathingCount((prev) => {
+          // Play audio cue at the start of each phase, not at the end
+          if (prev === breathingPattern[breathingPhase] && audioEnabled && isServiceInitialized) {
+            speechService.speakBreathingCue(breathingPhase, prev);
+          }
+          
           if (prev <= 1) {
             if (breathingPhase === 'inhale') {
               setBreathingPhase('hold');
-              // Play breathing cue for hold phase
-              if (audioEnabled && isServiceInitialized) {
-                speechService.speakBreathingCue('hold', breathingPattern.hold);
-              }
               return breathingPattern.hold;
             } else if (breathingPhase === 'hold') {
               setBreathingPhase('exhale');
-              // Play breathing cue for exhale phase
-              if (audioEnabled && isServiceInitialized) {
-                speechService.speakBreathingCue('exhale', breathingPattern.exhale);
-              }
               return breathingPattern.exhale;
             } else {
               setBreathingPhase('inhale');
@@ -171,13 +168,6 @@ const PanicButton = () => {
                   setTimeout(() => {
                     handleNextStep();
                   }, 1000); // Small delay to let user see completion
-                } else {
-                  // Play breathing cue for new inhale phase (if not the last cycle)
-                  if (audioEnabled && isServiceInitialized) {
-                    setTimeout(() => {
-                      speechService.speakBreathingCue('inhale', breathingPattern.inhale);
-                    }, 500); // Small delay to avoid overlapping audio
-                  }
                 }
                 return newCycles;
               });
@@ -384,28 +374,30 @@ const PanicButton = () => {
     const sessionDuration = sessionStartTime ? Math.floor((Date.now() - sessionStartTime.getTime()) / 1000) : 0;
     
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-soft-blue via-background to-accent z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-gradient-to-br from-soft-blue via-background to-accent z-50 flex items-center justify-center p-2 sm:p-4">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-32 right-32 w-32 h-32 bg-accent rounded-full blur-2xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-primary/50 rounded-full blur-xl animate-pulse delay-2000"></div>
+          <div className="absolute top-10 sm:top-20 left-10 sm:left-20 w-20 sm:w-40 h-20 sm:h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-16 sm:bottom-32 right-16 sm:right-32 w-16 sm:w-32 h-16 sm:h-32 bg-accent rounded-full blur-2xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/3 w-12 sm:w-24 h-12 sm:h-24 bg-primary/50 rounded-full blur-xl animate-pulse delay-2000"></div>
         </div>
 
-        <div className="w-full max-w-lg relative z-10">
+        <div className="w-full max-w-lg relative z-10 max-h-screen overflow-y-auto">
           {/* Header with progress and controls */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6 sticky top-0 bg-background/80 backdrop-blur-md rounded-lg p-2 sm:p-3">
             <Button
               variant="ghost"
               onClick={handleBackToDashboard}
-              className="text-foreground hover:bg-background/20 backdrop-blur"
+              className="text-foreground hover:bg-background/20 backdrop-blur text-sm sm:text-base"
+              size="sm"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Exit Session
+              <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Exit Session</span>
+              <span className="sm:hidden">Exit</span>
             </Button>
             
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-background/80 backdrop-blur">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Badge variant="secondary" className="bg-background/80 backdrop-blur text-xs sm:text-sm">
                 {Math.floor(sessionDuration / 60)}:{(sessionDuration % 60).toString().padStart(2, '0')}
               </Badge>
               
@@ -465,7 +457,7 @@ const PanicButton = () => {
           )}
 
           {/* Progress Bar */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <div className="flex justify-between text-sm text-muted-foreground mb-2">
               <span>Step {currentStep + 1} of {panicSteps.length}</span>
               <span>{Math.round(progress)}% Complete</span>
@@ -474,23 +466,23 @@ const PanicButton = () => {
           </div>
           
           <Card className="border-0 shadow-2xl bg-background/95 backdrop-blur-md">
-            <CardHeader className="pb-4 text-center">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                <Heart className="h-10 w-10 text-primary" />
+            <CardHeader className="pb-2 sm:pb-4 text-center px-4 sm:px-6">
+              <div className="w-16 sm:w-20 h-16 sm:h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-pulse">
+                <Heart className="h-8 sm:h-10 w-8 sm:w-10 text-primary" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground px-2">
                 {step.title}
               </CardTitle>
-              <Badge variant="outline" className="w-fit mx-auto mt-2">
+              <Badge variant="outline" className="w-fit mx-auto mt-2 text-xs sm:text-sm">
                 {step.type}
               </Badge>
             </CardHeader>
             
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
               {/* Special breathing exercise visualization */}
               {step.type === 'breathing' && (
-                <div className="text-center py-8">
-                  <div className="relative w-40 h-40 mx-auto mb-6">
+                <div className="text-center py-4 sm:py-8">
+                  <div className="relative w-32 sm:w-40 h-32 sm:h-40 mx-auto mb-4 sm:mb-6">
                     <div 
                       className="w-full h-full rounded-full border-4 border-primary/30 flex items-center justify-center transition-transform duration-1000 ease-in-out"
                       style={{ 
@@ -499,39 +491,39 @@ const PanicButton = () => {
                       }}
                     >
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-primary mb-1">{breathingCount}</div>
-                        <div className="text-sm text-muted-foreground">{getBreathingInstruction()}</div>
+                        <div className="text-2xl sm:text-3xl font-bold text-primary mb-1">{breathingCount}</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground px-2">{getBreathingInstruction()}</div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Progress indicator for breathing cycles */}
                   <div className="mb-4">
-                    <div className="text-sm text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-sm text-muted-foreground mb-2">
                       Breathing cycle {breathingCycles + 1} of {targetBreathingCycles}
                     </div>
                     <Progress 
                       value={(breathingCycles / targetBreathingCycles) * 100} 
-                      className="h-1 w-32 mx-auto" 
+                      className="h-1 w-24 sm:w-32 mx-auto" 
                     />
                   </div>
                   
                   <div className="flex justify-center gap-3 mb-4">
                     {!isBreathingActive ? (
-                      <Button onClick={startBreathingExercise} size="sm">
-                        <Play className="h-4 w-4 mr-2" />
+                      <Button onClick={startBreathingExercise} size="sm" className="text-xs sm:text-sm">
+                        <Play className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
                         Start Breathing
                       </Button>
                     ) : (
-                      <Button onClick={stopBreathingExercise} variant="outline" size="sm">
-                        <Pause className="h-4 w-4 mr-2" />
+                      <Button onClick={stopBreathingExercise} variant="outline" size="sm" className="text-xs sm:text-sm">
+                        <Pause className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
                         Pause
                       </Button>
                     )}
                   </div>
                   
                   {breathingCycles >= targetBreathingCycles && (
-                    <div className="text-sm text-success-green font-medium">
+                    <div className="text-xs sm:text-sm text-success-green font-medium animate-fade-in">
                       ✨ Breathing exercise complete! Moving to next step...
                     </div>
                   )}
@@ -540,43 +532,43 @@ const PanicButton = () => {
 
               {/* Grounding technique helper */}
               {step.type === 'grounding' && (
-                <div className="bg-accent/10 rounded-lg p-4 mb-4">
-                  <h4 className="font-semibold text-foreground mb-3">5-4-3-2-1 Technique:</h4>
-                  <div className="space-y-2 text-sm">
+                <div className="bg-accent/10 rounded-lg p-3 sm:p-4 mb-4">
+                  <h4 className="font-semibold text-foreground mb-3 text-sm sm:text-base">5-4-3-2-1 Technique:</h4>
+                  <div className="space-y-2 text-xs sm:text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">5</div>
+                      <div className="w-5 sm:w-6 h-5 sm:h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">5</div>
                       <span>Things you can see</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">4</div>
+                      <div className="w-5 sm:w-6 h-5 sm:h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">4</div>
                       <span>Things you can touch</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                      <div className="w-5 sm:w-6 h-5 sm:h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">3</div>
                       <span>Things you can hear</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                      <div className="w-5 sm:w-6 h-5 sm:h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">2</div>
                       <span>Things you can smell</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                      <div className="w-5 sm:w-6 h-5 sm:h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">1</div>
                       <span>Thing you can taste</span>
                     </div>
                   </div>
                 </div>
               )}
               
-              <p className="text-lg text-muted-foreground leading-relaxed text-center">
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-center px-2">
                 {step.content}
               </p>
               
               {/* Step completion indicators */}
-              <div className="flex justify-center gap-2 py-2">
+              <div className="flex justify-center gap-1 sm:gap-2 py-2">
                 {panicSteps.map((_, index) => (
                   <div
                     key={index}
-                    className={`w-3 h-3 rounded-full transition-colors ${
+                    className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full transition-colors ${
                       completedSteps.includes(index)
                         ? 'bg-success-green'
                         : index === currentStep
@@ -587,27 +579,28 @@ const PanicButton = () => {
                 ))}
               </div>
               
+              {/* Main action button - ALWAYS VISIBLE */}
               <Button 
                 onClick={handleNextStep}
-                className="w-full py-6 text-lg font-medium bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full py-4 sm:py-6 text-base sm:text-lg font-medium bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
                 size="lg"
               >
-                {completedSteps.includes(currentStep) && <CheckCircle className="h-5 w-5 mr-2" />}
+                {completedSteps.includes(currentStep) && <CheckCircle className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />}
                 {step.action}
               </Button>
 
-              {/* Emergency contacts for severe cases */}
+              {/* Emergency contacts for severe cases - ALWAYS VISIBLE IN FIRST STEP */}
               {currentStep === 0 && (
-                <div className="mt-6 p-4 bg-destructive/10 rounded-lg border border-destructive/20">
-                  <h4 className="font-semibold text-foreground mb-3 text-center">If this is a mental health emergency:</h4>
+                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-destructive/10 rounded-lg border border-destructive/20">
+                  <h4 className="font-semibold text-foreground mb-3 text-center text-sm sm:text-base">If this is a mental health emergency:</h4>
                   <div className="space-y-2">
                     {emergencyContacts.map((contact, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-background/50 rounded">
+                      <div key={index} className="flex items-center justify-between p-2 bg-background/50 rounded text-xs sm:text-sm">
                         <div className="flex items-center gap-2">
-                          <contact.icon className="h-4 w-4 text-destructive" />
-                          <span className="text-sm font-medium">{contact.name}</span>
+                          <contact.icon className="h-3 sm:h-4 w-3 sm:w-4 text-destructive" />
+                          <span className="font-medium">{contact.name}</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">{contact.number}</span>
+                        <span className="text-muted-foreground">{contact.number}</span>
                       </div>
                     ))}
                   </div>
@@ -624,27 +617,27 @@ const PanicButton = () => {
     <Card className="group bg-gradient-to-br from-panic-red/10 to-panic-red/5 border-panic-red/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden relative">
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-4 right-4 w-12 h-12 bg-panic-red/10 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-6 left-6 w-8 h-8 bg-panic-red/5 rounded-full animate-pulse delay-1000"></div>
+        <div className="absolute top-2 sm:top-4 right-2 sm:right-4 w-8 sm:w-12 h-8 sm:h-12 bg-panic-red/10 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 w-6 sm:w-8 h-6 sm:h-8 bg-panic-red/5 rounded-full animate-pulse delay-1000"></div>
       </div>
       
-      <CardContent className="p-8 text-center relative z-10">
-        <div className="w-24 h-24 bg-gradient-to-br from-panic-red/20 to-panic-red/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-          <Heart className="h-12 w-12 text-panic-red animate-pulse" />
+      <CardContent className="p-4 sm:p-8 text-center relative z-10">
+        <div className="w-16 sm:w-24 h-16 sm:h-24 bg-gradient-to-br from-panic-red/20 to-panic-red/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+          <Heart className="h-8 sm:h-12 w-8 sm:w-12 text-panic-red animate-pulse" />
         </div>
         
-        <h3 className="text-2xl font-bold text-foreground mb-3">Emergency Support</h3>
-        <p className="text-muted-foreground mb-6 leading-relaxed">
+        <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-3">Emergency Support</h3>
+        <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 leading-relaxed px-2">
           Feeling overwhelmed, having a panic attack, or in distress? Get immediate, guided support with proven techniques. 💚
         </p>
         
         {/* Quick stats from previous sessions */}
-        <div className="flex justify-center gap-4 mb-6 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
+        <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs text-muted-foreground">
+          <div className="flex items-center justify-center gap-1">
             <CheckCircle className="h-3 w-3 text-success-green" />
             <span>6-step guided process</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-1">
             <Heart className="h-3 w-3 text-panic-red" />
             <span>Scientifically proven</span>
           </div>
@@ -652,14 +645,14 @@ const PanicButton = () => {
         
         <Button 
           onClick={handlePanicClick}
-          className="w-full py-6 text-xl font-bold bg-panic-red hover:bg-panic-red/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+          className="w-full py-4 sm:py-6 text-lg sm:text-xl font-bold bg-panic-red hover:bg-panic-red/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
           size="lg"
         >
-          <Heart className="h-6 w-6 mr-3 animate-pulse" />
+          <Heart className="h-5 sm:h-6 w-5 sm:w-6 mr-2 sm:mr-3 animate-pulse" />
           I Need Help Now
         </Button>
         
-        <p className="text-xs text-muted-foreground mt-4">
+        <p className="text-xs text-muted-foreground mt-3 sm:mt-4 px-2">
           Available 24/7 • No signup required • Completely private
         </p>
       </CardContent>
