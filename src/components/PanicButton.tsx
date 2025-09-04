@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowLeft, Volume2, VolumeX, Play, Pause, Phone, MessageCircle, CheckCircle } from "lucide-react";
+import { Heart, ArrowLeft, Volume2, VolumeX, Play, Pause, Phone, MessageCircle, CheckCircle, Music, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { speechService } from "@/lib/speechService";
 
 const PanicButton = () => {
   const [inPanicMode, setInPanicMode] = useState(false);
@@ -17,6 +18,9 @@ const PanicButton = () => {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
+  const [currentAmbientSound, setCurrentAmbientSound] = useState('ocean');
+  const [isServiceInitialized, setIsServiceInitialized] = useState(false);
   const { toast } = useToast();
   const breathingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -77,7 +81,67 @@ const PanicButton = () => {
     exhale: 6
   };
 
-  // Breathing exercise logic
+  // Initialize speech service
+  useEffect(() => {
+    const initializeAudio = async () => {
+      try {
+        await speechService.initialize();
+        setIsServiceInitialized(true);
+        
+        // Load audio preferences
+        const prefs = JSON.parse(localStorage.getItem('wavee-audio-preferences') || '{}');
+        setAudioEnabled(prefs.audioEnabled !== false);
+        setCurrentAmbientSound(prefs.ambientSound || 'ocean');
+        
+        // Show initialization status
+        if (speechService.isElevenLabsEnabled()) {
+          toast({
+            title: "🎵 Premium Audio Ready",
+            description: "ElevenLabs AI voice is now available for guided sessions!",
+          });
+        } else {
+          toast({
+            title: "🔊 Audio System Ready", 
+            description: "Using browser text-to-speech for guided sessions.",
+          });
+        }
+      } catch (error) {
+        console.error('Failed to initialize audio services:', error);
+      }
+    };
+
+    initializeAudio();
+
+    // Cleanup on unmount
+    return () => {
+      speechService.dispose();
+    };
+  }, []);
+
+  // Auto-play step audio when step changes
+  useEffect(() => {
+    if (inPanicMode && audioEnabled && isServiceInitialized) {
+      const step = panicSteps[currentStep];
+      if (step.audioText) {
+        playStepAudio(step.audioText);
+      }
+    }
+  }, [currentStep, inPanicMode, audioEnabled, isServiceInitialized]);
+
+  // Start ambient sound when entering panic mode
+  useEffect(() => {
+    if (inPanicMode && audioEnabled && currentAmbientSound !== 'silence') {
+      speechService.playAmbientSound(currentAmbientSound);
+    } else {
+      speechService.stopAmbientSound();
+    }
+
+    return () => {
+      speechService.stopAmbientSound();
+    };
+  }, [inPanicMode, audioEnabled, currentAmbientSound]);
+
+  // Breathing exercise logic with audio cues
   useEffect(() => {
     if (isBreathingActive && currentStep === 1) {
       breathingIntervalRef.current = setInterval(() => {
@@ -85,9 +149,17 @@ const PanicButton = () => {
           if (prev <= 1) {
             if (breathingPhase === 'inhale') {
               setBreathingPhase('hold');
+              // Play breathing cue for hold phase
+              if (audioEnabled && isServiceInitialized) {
+                speechService.speakBreathingCue('hold', breathingPattern.hold);
+              }
               return breathingPattern.hold;
             } else if (breathingPhase === 'hold') {
               setBreathingPhase('exhale');
+              // Play breathing cue for exhale phase
+              if (audioEnabled && isServiceInitialized) {
+                speechService.speakBreathingCue('exhale', breathingPattern.exhale);
+              }
               return breathingPattern.exhale;
             } else {
               setBreathingPhase('inhale');
@@ -99,6 +171,13 @@ const PanicButton = () => {
                   setTimeout(() => {
                     handleNextStep();
                   }, 1000); // Small delay to let user see completion
+                } else {
+                  // Play breathing cue for new inhale phase (if not the last cycle)
+                  if (audioEnabled && isServiceInitialized) {
+                    setTimeout(() => {
+                      speechService.speakBreathingCue('inhale', breathingPattern.inhale);
+                    }, 500); // Small delay to avoid overlapping audio
+                  }
                 }
                 return newCycles;
               });
@@ -206,6 +285,13 @@ const PanicButton = () => {
     setIsBreathingActive(true);
     setBreathingPhase('inhale');
     setBreathingCycles(0);
+    
+    // Play initial breathing cue
+    if (audioEnabled && isServiceInitialized) {
+      setTimeout(() => {
+        speechService.speakBreathingCue('inhale', breathingPattern.inhale);
+      }, 1000); // Small delay to let the user see the visual start
+    }
   };
 
   const stopBreathingExercise = () => {
@@ -231,6 +317,59 @@ const PanicButton = () => {
       case 'inhale': return 'Breathe In Slowly';
       case 'hold': return 'Hold Your Breath';
       case 'exhale': return 'Breathe Out Gently';
+    }
+  };
+
+  // Audio utility functions
+  const playStepAudio = async (text: string) => {
+    if (!audioEnabled || !isServiceInitialized) return;
+    
+    setIsAudioLoading(true);
+    try {
+      await speechService.speak({
+        text,
+        rate: 0.9,
+        volume: 0.8,
+        onStart: () => setIsAudioLoading(false),
+        onEnd: () => setIsAudioLoading(false),
+        onError: (error) => {
+          console.error('Audio playback failed:', error);
+          setIsAudioLoading(false);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to play step audio:', error);
+      setIsAudioLoading(false);
+    }
+  };
+
+  const toggleAudioEnabled = () => {
+    const newState = !audioEnabled;
+    setAudioEnabled(newState);
+    
+    // Save preference
+    const prefs = JSON.parse(localStorage.getItem('wavee-audio-preferences') || '{}');
+    prefs.audioEnabled = newState;
+    localStorage.setItem('wavee-audio-preferences', JSON.stringify(prefs));
+    
+    if (!newState) {
+      speechService.stopSpeech();
+      speechService.stopAmbientSound();
+    } else if (inPanicMode && currentAmbientSound !== 'silence') {
+      speechService.playAmbientSound(currentAmbientSound);
+    }
+  };
+
+  const handleAmbientSoundChange = (soundId: string) => {
+    setCurrentAmbientSound(soundId);
+    
+    // Save preference
+    const prefs = JSON.parse(localStorage.getItem('wavee-audio-preferences') || '{}');
+    prefs.ambientSound = soundId;
+    localStorage.setItem('wavee-audio-preferences', JSON.stringify(prefs));
+    
+    if (audioEnabled && inPanicMode) {
+      speechService.playAmbientSound(soundId);
     }
   };
 
@@ -273,13 +412,57 @@ const PanicButton = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setAudioEnabled(!audioEnabled)}
-                className="text-foreground hover:bg-background/20"
+                onClick={toggleAudioEnabled}
+                className="text-foreground hover:bg-background/20 relative"
               >
-                {audioEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {isAudioLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : audioEnabled ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4" />
+                )}
+                {speechService.isElevenLabsEnabled() && audioEnabled && (
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                )}
               </Button>
             </div>
           </div>
+
+          {/* Audio Controls & Ambient Sound Selector */}
+          {audioEnabled && isServiceInitialized && (
+            <div className="mb-4 p-3 bg-background/80 backdrop-blur rounded-lg border">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Music className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Audio Environment</span>
+                  {speechService.isElevenLabsEnabled() && (
+                    <Badge variant="secondary" className="text-xs">AI Voice</Badge>
+                  )}
+                </div>
+                {speechService.isSpeaking() && (
+                  <div className="flex items-center gap-1 text-xs text-primary">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    Speaking
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-2 overflow-x-auto">
+                {speechService.getAmbientSounds().map((sound) => (
+                  <Button
+                    key={sound.id}
+                    variant={currentAmbientSound === sound.id ? "default" : "outline"}
+                    size="sm"
+                    className="flex-shrink-0 text-xs"
+                    onClick={() => handleAmbientSoundChange(sound.id)}
+                  >
+                    <span className="mr-1">{sound.icon}</span>
+                    {sound.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Progress Bar */}
           <div className="mb-6">
