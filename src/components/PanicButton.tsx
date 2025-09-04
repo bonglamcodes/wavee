@@ -11,6 +11,8 @@ const PanicButton = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [breathingPhase, setBreathingPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale');
   const [breathingCount, setBreathingCount] = useState(4);
+  const [breathingCycles, setBreathingCycles] = useState(0);
+  const [targetBreathingCycles] = useState(5); // Complete 5 breathing cycles
   const [isBreathingActive, setIsBreathingActive] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
@@ -30,7 +32,7 @@ const PanicButton = () => {
     {
       title: "🌬️ Let's Breathe Together",
       content: "We're going to breathe together using a proven technique. Follow the breathing circle - inhale as it expands, hold, then exhale as it contracts. This will help calm your nervous system.",
-      action: "Start breathing exercise",
+      action: "Continue to grounding",
       type: "breathing" as const,
       duration: 60,
       audioText: "Let's breathe together. Follow my voice and the visual guide."
@@ -89,6 +91,17 @@ const PanicButton = () => {
               return breathingPattern.exhale;
             } else {
               setBreathingPhase('inhale');
+              // Complete one breathing cycle
+              setBreathingCycles(cycles => {
+                const newCycles = cycles + 1;
+                // Auto-advance to next step after target cycles
+                if (newCycles >= targetBreathingCycles) {
+                  setTimeout(() => {
+                    handleNextStep();
+                  }, 1000); // Small delay to let user see completion
+                }
+                return newCycles;
+              });
               return breathingPattern.inhale;
             }
           }
@@ -115,7 +128,7 @@ const PanicButton = () => {
     setCompletedSteps([]);
     setBreathingPhase('inhale');
     setBreathingCount(breathingPattern.inhale);
-    setIsBreathingActive(false);
+    setBreathingCycles(0);
     
     // Save panic session start to localStorage for tracking
     const sessions = JSON.parse(localStorage.getItem('wavee-panic-sessions') || '[]');
@@ -127,7 +140,7 @@ const PanicButton = () => {
     // Mark current step as completed
     setCompletedSteps(prev => [...prev, currentStep]);
     
-    // Stop breathing exercise when leaving step 1
+    setBreathingCycles(0);
     if (currentStep === 1) {
       setIsBreathingActive(false);
     }
@@ -174,7 +187,7 @@ const PanicButton = () => {
   const handleBackToDashboard = () => {
     setInPanicMode(false);
     setCurrentStep(0);
-    setIsBreathingActive(false);
+    setBreathingCycles(0);
     
     if (sessionStartTime) {
       const sessionDuration = Date.now() - sessionStartTime.getTime();
@@ -192,7 +205,7 @@ const PanicButton = () => {
   const startBreathingExercise = () => {
     setIsBreathingActive(true);
     setBreathingPhase('inhale');
-    setBreathingCount(breathingPattern.inhale);
+    setBreathingCycles(0);
   };
 
   const stopBreathingExercise = () => {
@@ -309,6 +322,17 @@ const PanicButton = () => {
                     </div>
                   </div>
                   
+                  {/* Progress indicator for breathing cycles */}
+                  <div className="mb-4">
+                    <div className="text-sm text-muted-foreground mb-2">
+                      Breathing cycle {breathingCycles + 1} of {targetBreathingCycles}
+                    </div>
+                    <Progress 
+                      value={(breathingCycles / targetBreathingCycles) * 100} 
+                      className="h-1 w-32 mx-auto" 
+                    />
+                  </div>
+                  
                   <div className="flex justify-center gap-3 mb-4">
                     {!isBreathingActive ? (
                       <Button onClick={startBreathingExercise} size="sm">
@@ -322,6 +346,12 @@ const PanicButton = () => {
                       </Button>
                     )}
                   </div>
+                  
+                  {breathingCycles >= targetBreathingCycles && (
+                    <div className="text-sm text-success-green font-medium">
+                      ✨ Breathing exercise complete! Moving to next step...
+                    </div>
+                  )}
                 </div>
               )}
 
