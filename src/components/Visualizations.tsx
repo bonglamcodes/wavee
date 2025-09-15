@@ -4,11 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, Play, Pause, Volume2 } from "lucide-react";
 
-interface VisualizationsProps {
-  isGuest?: boolean;
-}
-
-const Visualizations = ({ isGuest = false }: VisualizationsProps) => {
+const Visualizations = () => {
   const [activeVisualization, setActiveVisualization] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -137,8 +133,8 @@ const Visualizations = ({ isGuest = false }: VisualizationsProps) => {
         <Tabs defaultValue="beach" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="beach">Beach</TabsTrigger>
-            <TabsTrigger value="forest" disabled={isGuest}>Forest</TabsTrigger>
-            <TabsTrigger value="mountain" disabled={isGuest}>Mountain</TabsTrigger>
+            <TabsTrigger value="forest">Forest</TabsTrigger>
+            <TabsTrigger value="mountain">Mountain</TabsTrigger>
           </TabsList>
           
           {Object.entries(visualizations).map(([key, visualization]) => (
@@ -150,28 +146,13 @@ const Visualizations = ({ isGuest = false }: VisualizationsProps) => {
                 <p className="text-muted-foreground mb-4">
                   {visualization.description}
                 </p>
-                {isGuest && key !== 'beach' ? (
-                  <div className="space-y-2">
-                    <Button 
-                      disabled
-                      className="bg-muted text-muted-foreground cursor-not-allowed"
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      Sign Up to Unlock
-                    </Button>
-                    <p className="text-xs text-muted-foreground">
-                      Create a free account to access all visualizations
-                    </p>
-                  </div>
-                ) : (
-                  <Button 
-                    onClick={() => handleStartVisualization(key)}
-                    className="bg-primary hover:bg-primary/90"
-                  >
-                    <Play className="h-4 w-4 mr-2" />
-                    Start Visualization
-                  </Button>
-                )}
+                <Button 
+                  onClick={() => handleStartVisualization(key)}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  Start Visualization
+                </Button>
               </div>
               
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

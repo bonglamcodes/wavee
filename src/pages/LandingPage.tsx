@@ -25,14 +25,9 @@ const LandingPage = () => {
             <h1 className="text-2xl font-bold text-primary">Wavee</h1>
             <span className="text-sm text-muted-foreground hidden sm:block">🌊 Your calm companion</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/signup">Get Started ✨</Link>
-            </Button>
-          </div>
+          <Button asChild>
+            <Link to="/app">Start Using Wavee ✨</Link>
+          </Button>
         </div>
       </header>
 
@@ -55,17 +50,11 @@ const LandingPage = () => {
             Start your journey to mental wellness today. 💚
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex justify-center mb-12">
             <Button size="lg" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300" asChild>
               <Link to="/app">
                 <Play className="mr-2 h-5 w-5" />
-                Try Guest Mode 🚀
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-background/80 backdrop-blur border-primary/30 hover:bg-primary/5" asChild>
-              <Link to="/signup">
-                Create Free Account 🎯
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Start Using Wavee 🚀
               </Link>
             </Button>
           </div>
@@ -86,7 +75,7 @@ const LandingPage = () => {
           </div>
 
           <p className="text-sm text-muted-foreground mt-6">
-            No signup required to try essential features • Full access with free account 🌟
+            No signup required • Complete access to all features 🌟
           </p>
         </div>
       </section>
@@ -151,80 +140,64 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Guest Mode vs Full Access */}
+      {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="text-4xl mb-4">⚡</div>
             <h3 className="text-3xl font-bold text-foreground mb-4">
-              Start Immediately or Unlock Full Potential
+              Complete Access to All Features
             </h3>
             <p className="text-muted-foreground">
-              Choose the experience that works best for you right now. 🎯
+              Everything you need for anxiety management, available immediately. 🎯
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="group p-8 border-border/40 bg-background/60 backdrop-blur hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="text-3xl">🌟</div>
-                  <h4 className="text-2xl font-semibold text-foreground">Guest Mode</h4>
+          <Card className="p-8 border-primary/40 bg-gradient-to-br from-primary/5 to-accent/10 backdrop-blur">
+            <CardContent className="p-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-xl font-semibold text-foreground mb-4">Immediate Relief 🛡️</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Panic Button & Guided Support
+                    </li>
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Breathing Exercises & Visualizations
+                    </li>
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Grounding Techniques
+                    </li>
+                  </ul>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    🛡️ Panic Button & Guided Support
-                  </li>
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    🌬️ Basic Breathing Exercises
-                  </li>
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    📚 One Free Lesson
-                  </li>
-                </ul>
-                <Button className="w-full group-hover:scale-105 transition-transform" variant="outline" asChild>
-                  <Link to="/app">Try Now 🚀</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="group p-8 border-primary/40 bg-gradient-to-br from-primary/5 to-accent/10 backdrop-blur hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-full blur-2xl"></div>
-              <CardContent className="p-0 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="text-3xl">✨</div>
-                  <h4 className="text-2xl font-semibold text-foreground">Full Access</h4>
-                  <div className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                    FREE
-                  </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-foreground mb-4">Long-term Management 📈</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Personal Journal & Progress Tracking
+                    </li>
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Complete Lessons Library
+                    </li>
+                    <li className="flex items-center text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      Educational Resources
+                    </li>
+                  </ul>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    🌟 Everything in Guest Mode
-                  </li>
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    📝 Personal Journal & Progress Tracking
-                  </li>
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    📖 Complete Lessons Library
-                  </li>
-                  <li className="flex items-center text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    🧘‍♀️ Advanced Visualizations
-                  </li>
-                </ul>
-                <Button className="w-full group-hover:scale-105 transition-transform shadow-lg" asChild>
-                  <Link to="/signup">Create Free Account 🎯</Link>
+              </div>
+              <div className="mt-8 text-center">
+                <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-300" asChild>
+                  <Link to="/app">Start Using Wavee Now 🚀</Link>
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
