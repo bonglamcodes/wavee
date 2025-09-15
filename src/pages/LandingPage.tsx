@@ -42,19 +42,19 @@ const LandingPage = () => {
             <div className="text-6xl mb-4">🌸</div>
             <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Find Your Calm in the
-              <span className="text-primary block">Storm of Anxiety 🌈</span>
+              <span className="text-primary block">Storm of Anxiety</span>
             </h2>
           </div>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
             Wavee provides immediate relief for panic attacks and long-term tools for anxiety management. 
-            Start your journey to mental wellness today. 💚
+            Start your journey to mental wellness today.
           </p>
           
           <div className="flex justify-center mb-12">
-            <Button size="lg" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300" asChild>
+            <Button size="lg" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-calming-teal hover:from-primary/90 hover:to-calming-teal/90" asChild>
               <Link to="/app">
                 <Play className="mr-2 h-5 w-5" />
-                Start Using Wavee 🚀
+                Start Using Wavee
               </Link>
             </Button>
           </div>
@@ -75,7 +75,7 @@ const LandingPage = () => {
           </div>
 
           <p className="text-sm text-muted-foreground mt-6">
-            No signup required • Complete access to all features 🌟
+            No signup required • Complete access to all features
           </p>
         </div>
       </section>
@@ -88,15 +88,15 @@ const LandingPage = () => {
             Immediate Relief When You Need It Most
           </h3>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Access powerful tools designed by mental health professionals to help you through difficult moments. 💪
+            Access powerful tools designed by mental health professionals to help you through difficult moments.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <Card className="group p-6 text-center border-border/40 bg-background/60 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+          <Card className="group p-6 text-center border-border/40 bg-background/80 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-0">
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-calming-teal/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <Shield className="h-10 w-10 text-primary" />
                 </div>
                 <div className="absolute -top-2 -right-2 text-2xl">🛡️</div>
@@ -108,10 +108,10 @@ const LandingPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="group p-6 text-center border-border/40 bg-background/60 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+          <Card className="group p-6 text-center border-border/40 bg-background/80 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-0">
               <div className="relative mb-6">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
                   <img src={breathingVisual} alt="Breathing exercises" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -top-2 -right-2 text-2xl">🌬️</div>
@@ -123,10 +123,10 @@ const LandingPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="group p-6 text-center border-border/40 bg-background/60 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+          <Card className="group p-6 text-center border-border/40 bg-background/80 backdrop-blur hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-0">
               <div className="relative mb-6">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
                   <img src={growthIllustration} alt="Learn and grow" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -top-2 -right-2 text-2xl">🧠</div>
@@ -144,20 +144,23 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-4xl mb-4">⚡</div>
+            <div className="text-4xl mb-4">✨</div>
             <h3 className="text-3xl font-bold text-foreground mb-4">
               Complete Access to All Features
             </h3>
             <p className="text-muted-foreground">
-              Everything you need for anxiety management, available immediately. 🎯
+              Everything you need for anxiety management, available immediately.
             </p>
           </div>
 
-          <Card className="p-8 border-primary/40 bg-gradient-to-br from-primary/5 to-accent/10 backdrop-blur">
+          <Card className="p-8 border-primary/30 bg-gradient-to-br from-primary/5 via-background/80 to-calming-teal/5 backdrop-blur shadow-xl">
             <CardContent className="p-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="text-xl font-semibold text-foreground mb-4">Immediate Relief 🛡️</h4>
+                  <h4 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    Immediate Relief
+                  </h4>
                   <ul className="space-y-3">
                     <li className="flex items-center text-muted-foreground">
                       <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
@@ -174,7 +177,10 @@ const LandingPage = () => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-xl font-semibold text-foreground mb-4">Long-term Management 📈</h4>
+                  <h4 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-primary" />
+                    Long-term Management
+                  </h4>
                   <ul className="space-y-3">
                     <li className="flex items-center text-muted-foreground">
                       <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
@@ -192,8 +198,8 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="mt-8 text-center">
-                <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-300" asChild>
-                  <Link to="/app">Start Using Wavee Now 🚀</Link>
+                <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-calming-teal hover:from-primary/90 hover:to-calming-teal/90" asChild>
+                  <Link to="/app">Start Using Wavee Now</Link>
                 </Button>
               </div>
             </CardContent>
@@ -211,17 +217,17 @@ const LandingPage = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div className="text-center p-6">
+          <div className="text-center p-6 bg-background/60 rounded-xl backdrop-blur border border-border/30">
             <div className="text-3xl font-bold text-primary mb-2">10,000+</div>
-            <div className="text-muted-foreground">Users helped 🌈</div>
+            <div className="text-muted-foreground">Users helped</div>
           </div>
-          <div className="text-center p-6">
+          <div className="text-center p-6 bg-background/60 rounded-xl backdrop-blur border border-border/30">
             <div className="text-3xl font-bold text-primary mb-2">4.9/5</div>
-            <div className="text-muted-foreground">User rating ⭐</div>
+            <div className="text-muted-foreground">User rating</div>
           </div>
-          <div className="text-center p-6">
+          <div className="text-center p-6 bg-background/60 rounded-xl backdrop-blur border border-border/30">
             <div className="text-3xl font-bold text-primary mb-2">24/7</div>
-            <div className="text-muted-foreground">Always available 🕰️</div>
+            <div className="text-muted-foreground">Always available</div>
           </div>
         </div>
       </section>
@@ -233,18 +239,18 @@ const LandingPage = () => {
             className="absolute inset-0 opacity-20 bg-cover bg-center rounded-3xl"
             style={{ backgroundImage: `url(${meditationIllustration})` }}
           ></div>
-          <div className="relative z-10 text-center p-12 bg-background/60 backdrop-blur rounded-3xl border border-border/40 max-w-3xl mx-auto">
+          <div className="relative z-10 text-center p-12 bg-background/80 backdrop-blur rounded-3xl border border-border/30 max-w-3xl mx-auto shadow-xl">
             <div className="text-5xl mb-6">🤗</div>
             <h3 className="text-2xl font-semibold text-foreground mb-4">
               You're Not Alone in This Journey
             </h3>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               Millions of people experience anxiety and panic attacks. Wavee is here to provide you with 
-              evidence-based tools and support whenever you need them, day or night. 💚
+              evidence-based tools and support whenever you need them, day or night.
             </p>
-            <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-300" asChild>
+            <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-calming-teal hover:from-primary/90 hover:to-calming-teal/90" asChild>
               <Link to="/app">
-                Start Your Journey ✨
+                Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
